@@ -12,6 +12,7 @@ module.exports = async function(peripheral) {
   peripheral.once('connect', function(a) {
     list.push(peripheral.address);
     console.log('\x1b[36m', list, '\x1b[0m');
+
   });
 
   peripheral.once('disconnect', function(a) {
@@ -21,14 +22,6 @@ module.exports = async function(peripheral) {
     }
     console.log('\x1b[36m', list, '\x1b[0m');
 
-    if (timerA) {
-      console.log('\x1b[36m[Peripheral]\x1b[0m Timer timerA stop');
-      clearInterval(timerA);
-    }
-    if (timerB) {
-      console.log('\x1b[36m[Peripheral]\x1b[0m Timer timerB stop');
-      clearInterval(timerB);
-    }
   });
 
   peripheral = new Peripheral(peripheral);
@@ -70,6 +63,7 @@ module.exports = async function(peripheral) {
   // fff3.set ff
 
   await peripheral.connect();
+  console.log('connect');
 
   var svcUuids = ['fff0'];
   var chrUuids = ['fff1', 'fff2', 'fff3', 'fff4'];
@@ -80,11 +74,10 @@ module.exports = async function(peripheral) {
   var f2 = p.chrs['fff2'];
   var f3 = p.chrs['fff3'];
   var f4 = p.chrs['fff4'];
- 
 
   let mac = peripheral.address.replace(/:/g, '');
   console.log(mac);
-  f4.notify((data, isNotification) => {
+  f2.notify((data, isNotification) => {
     console.log(data);
   });
 

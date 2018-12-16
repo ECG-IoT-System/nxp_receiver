@@ -38,7 +38,9 @@ module.exports = class Peripheral {
     }
 
     return new Promise((resolve, reject) => {
-      this.peripheral.discoverSomeServicesAndCharacteristics(svcUuids, chrUuids, function(err, svcs, chrs) {
+      this.peripheral.discoverSomeServicesAndCharacteristics( svcUuids, chrUuids,function(err, svcs, chrs) {
+	//
+
         resolve({
           svcs: svcs ? svcs.reduce(reducer, {}) : {},
           chrs: chrs ? chrs.reduce(reducer, {}) : {},

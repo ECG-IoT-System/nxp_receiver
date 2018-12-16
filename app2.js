@@ -1,12 +1,16 @@
-var noble = require('noble');
-var connect = require('./controllers/connect');
-const errors = require('./config/errors');
+// Connect to a peripheral running the echo service
+// https://github.com/noble/bleno/blob/master/examples/echo
 
-const ECHO_SERVICE_UUID = 'fff0';
+// subscribe to be notified when the value changes
+// start an interval to write data to the characteristic
+
+//const noble = require('noble');
+var noble = require('noble');
+
+const ECHO_SERVICE_UUID = 'fee9';
 const ECHO_CHARACTERISTIC_UUID = 'fff2';
 
-noble.on('stateChange', function(state) {
-  console.log('state change: ', state);
+noble.on('stateChange', state => {
   if (state === 'poweredOn') {
     setInterval(function() {
       noble.stopScanning();
@@ -20,15 +24,13 @@ noble.on('stateChange', function(state) {
   }
 });
 
-noble.on('discover', function(peripheral) {
-//NXP_QPP
-//SimpleBLEPeripheral
-  if (peripheral.advertisement.localName !== 'NXP_QPP') return;
-  console.log('Discovered: ' + peripheral.address, peripheral.advertisement.localName);
-
-  noble.stopScanning();
-  //connectAndSetUp(peripheral);
-  connect(peripheral);
+noble.on('discover', peripheral => {
+    if (peripheral.advertisement.localName !== 'NXP_QPP') return;
+    // connect to the first peripheral that is scanned
+    noble.stopScanning();
+    const name = peripheral.advertisement.localName;
+    console.log(`Connecting to '${name}' ${peripheral.id}`);
+    connectAndSetUp(peripheral);
 });
 
 function connectAndSetUp(peripheral) {
@@ -77,20 +79,3 @@ function onServicesAndCharacteristicsDiscovered(error, services, characteristics
     echoCharacteristic.write(message);
   }, 2500);
 }
-
-
-noble.on('warning', function(message) {
-  console.warn('\x1b[33m[Warn]\x1b[0m', message);
-});
-
-noble.on('unknown', function(message) {
-  console.warn('\x1b[33m[Unknown]\x1b[0m', message);
-});
-
-noble.on('scanStart', function() {
-  console.log('start scanning');
-});
-
-noble.on('scanStop', function() {
-  console.log('stop scanning');
-});
