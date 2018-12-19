@@ -31,19 +31,6 @@ module.exports = async function(peripheral) {
   // peripheral discover service fff0
   //
   // service fff0 discover chars fff1, fff2 , fff3, fff4
-  //
-  // fff1.write 03
-  // fff1.read
-  //
-  // fff1.write 00
-  // fff1.read
-  //
-  // fff1.write time
-  // fff1.read
-  //
-  // fff4.notify
-  // fff3.set ff
-  //
 
   // svc stands for service
   // chr stands for characteristic
@@ -77,8 +64,15 @@ module.exports = async function(peripheral) {
 
   let mac = peripheral.address.replace(/:/g, '');
   console.log(mac);
-  f2.notify((data, isNotification) => {
-    console.log(data);
+  f4.notify((data, isNotification) => {
+    let packet = new Packet(data);
+
+    packet.parse_nxp_packet();
+    console.log(packet.get())
+    saveTxt.send([], packet.get(), [], mac, 0);
+
+    signals = signals.concat(packet.get());
+    phpserver.send([], packet.get(), [], mac, 0);
   });
 
 };
