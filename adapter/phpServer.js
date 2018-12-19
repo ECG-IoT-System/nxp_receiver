@@ -52,19 +52,17 @@ exports.send = function (time, data, gdata, mac, rssi) {
   var gcount = gdata.length / 3;
   var gsample_rate = (time[1] - time[0]) / gcount;
 
-  var body = {};
-  body.ecg = [];
-  body.gsensor = [];
+  var body = [ {count} ];
 
   data.forEach((d, index) => {
-    body.ecg.push({
+    body.push({
       deviceid: device.id,
       time: time[0] + index * sample_rate,
       data: d,
     });
   });
   for (let i = 0; i < gcount; i++) {
-    body.gsensor.push({
+    body.push({
       gdeviceid: device.id,
       gtime: time[0] + i * gsample_rate,
       axisX: gdata[i * 3],

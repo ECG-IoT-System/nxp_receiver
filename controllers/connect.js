@@ -72,7 +72,8 @@ module.exports = async function(peripheral) {
     saveTxt.send([], packet.get(), [], mac, 0);
 
     signals = signals.concat(packet.get());
-    phpserver.send([], packet.get(), [], mac, 0);
+    time = [ 0, 0 ];
+    phpserver.send(time, packet.get(), [], mac, 0);
   });
 
 };
